@@ -3,85 +3,86 @@
 alert("Webflow Custom Development By Little Big Things!");
 console.log("wtf is this");
 
-let typeSplit;
+const text = new SplitType("#target", { types: "lines, words" });
 
-function runSplit() {
-  let currentElement = document.querySelector(".split-lines");
-  typeSplit = new SplitType(currentElement, { types: "lines, words" });
-  $(".line").append("<div class='line-mask'></div>");
-  runAnimation();
-}
+// let typeSplit;
 
-runSplit();
+// function runSplit() {
+//   let currentElement = document.querySelector(".split-lines");
+//   typeSplit = new SplitType(currentElement, { types: "lines, words" });
+//   $(".line").append("<div class='line-mask'></div>");
+//   runAnimation();
+// }
 
-window.addEventListener("resize", function () {
-  if (typeSplit) {
-    typeSplit.revert();
-    runSplit();
-  }
-});
+// runSplit();
 
-function runAnimation() {
-  $(".line").each(function (index) {
-    let triggerElement = $(this);
-    let targetElement = $(this).find(".line-mask");
+// window.addEventListener("resize", function () {
+//   if (typeSplit) {
+//     typeSplit.revert();
+//     runSplit();
+//   }
+// });
 
-    let tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: triggerElement,
-        // trigger element - viewport
-        start: "top center",
-        end: "bottom top",
-        scrub: 1,
-      },
-    });
+// function runAnimation() {
+//   $(".line").each(function (index) {
+//     let triggerElement = $(this);
+//     let targetElement = $(this).find(".line-mask");
 
-    tl.to(targetElement, {
-      width: "0%",
-      duration: 1,
-    });
+//     let tl = gsap.timeline({
+//       scrollTrigger: {
+//         trigger: triggerElement,
+//         // trigger element - viewport
+//         start: "top center",
+//         end: "bottom top",
+//         scrub: 1,
+//       },
+//     });
+
+//     tl.to(targetElement, {
+//       width: "0%",
+//       duration: 1,
+//     });
+//   });
+// }
+
+// window.addEventListener("DOMContentLoaded", (event) => {
+//   typeSplit = new SplitType("[text-split]", {
+//     types: "lines, words, chars",
+//     tagName: "span",
+//   });
+
+// Dynamic scroll trigger function
+function createScrollTrigger(triggerElement, timeline) {
+  ScrollTrigger.create({
+    trigger: triggerElement,
+    start: "top bottom",
+    onLeaveBack: () => {
+      timeline.progress(0);
+      timeline.pause();
+    },
+  });
+
+  ScrollTrigger.create({
+    trigger: triggerElement,
+    start: "top 60%",
+    onEnter: () => timeline.play(),
   });
 }
 
-window.addEventListener("DOMContentLoaded", (event) => {
-  typeSplit = new SplitType("[text-split]", {
-    types: "lines, words, chars",
-    tagName: "span",
+$("[words-slide-up]").each(function (index) {
+  let tl = gsap.timeline({ paused: true });
+  tl.from($(this).find(".word"), {
+    yPercent: 100,
+    duration: 0.4,
+    ease: "power1.out",
+    opacity: 0,
+    stagger: { amount: 0.4 },
   });
 
-  // Dynamic scroll trigger function
-  function createScrollTrigger(triggerElement, timeline) {
-    ScrollTrigger.create({
-      trigger: triggerElement,
-      start: "top bottom",
-      onLeaveBack: () => {
-        timeline.progress(0);
-        timeline.pause();
-      },
-    });
-
-    ScrollTrigger.create({
-      trigger: triggerElement,
-      start: "top 60%",
-      onEnter: () => timeline.play(),
-    });
-  }
-
-  $("[words-slide-up]").each(function (index) {
-    let tl = gsap.timeline({ paused: true });
-    tl.from($(this).find(".word"), {
-      yPercent: 100,
-      duration: 0.4,
-      ease: "power1.out",
-      opacity: 0,
-      stagger: { amount: 0.4 },
-    });
-
-    createScrollTrigger($(this), tl);
-  });
-
-  gsap.set("[text-split]", { opacity: 1 });
+  createScrollTrigger($(this), tl);
 });
+
+gsap.set("[text-split]", { opacity: 1 });
 
 // Avoid flash of unstyled content
 
