@@ -3,7 +3,7 @@
 alert("Webflow Custom Development By Little Big Things!");
 console.log("wtf is this");
 
-const text = new SplitType(".split-lines", { types: "lines, words" });
+const text = new SplitType("#target", { types: "lines, words" });
 
 // let typeSplit;
 
